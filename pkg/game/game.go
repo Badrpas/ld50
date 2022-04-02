@@ -4,6 +4,7 @@ import (
 	"github.com/badrpas/ld50/pkg/entity"
 	"github.com/hajimehoshi/ebiten/v2"
 	camera "github.com/melonfunction/ebiten-camera"
+	"log"
 )
 
 type EntitiesStorage map[*entity.Entity]*entity.Entity
@@ -14,11 +15,11 @@ type Game struct {
 }
 
 func NewGame() *Game {
-	width, height := ebiten.WindowSize()
 	game := &Game{
 		Entities: EntitiesStorage{},
-		Camera:   camera.NewCamera(width, height, 0, 0, 0, 1),
 	}
+	init_input(game)
+	init_camera(game)
 
 	return game
 }
@@ -28,6 +29,8 @@ func (g *Game) AddEntity(e interface{}) {
 	if ok {
 		g.Entities[ent] = ent
 		ent.Game = g
+	} else {
+		log.Println("Received non entity in Game.AddEntity()")
 	}
 }
 
@@ -36,6 +39,8 @@ func (g *Game) RemoveEntity(e interface{}) {
 	if ok {
 		delete(g.Entities, ent)
 		ent.Game = nil
+	} else {
+		log.Println("Received non entity in Game.RemoveEntity()")
 	}
 }
 

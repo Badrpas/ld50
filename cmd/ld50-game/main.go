@@ -13,7 +13,10 @@ func main() {
 
 	ebiten.SetWindowResizable(true)
 
-	gamemap.LoadMap("def.tmx", g)
+	err := gamemap.LoadMap("def.tmx", g)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
