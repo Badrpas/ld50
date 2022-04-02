@@ -3,7 +3,6 @@ package sprite
 import (
 	"github.com/badrpas/ld50/pkg/common"
 	"github.com/badrpas/ld50/pkg/entity"
-	"github.com/badrpas/ld50/pkg/img"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -14,12 +13,12 @@ type Sprite struct {
 	Pos common.Vec2
 }
 
-func NewSprite(img_name string, pos common.Vec2) *entity.Entity {
+func NewSpriteEntity(image *ebiten.Image, pos common.Vec2) *entity.Entity {
 	s := &Sprite{
 		&entity.Entity{
 			Render: render,
 		},
-		img.ImgRepo[img_name],
+		image,
 		pos,
 	}
 
