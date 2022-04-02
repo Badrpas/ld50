@@ -69,8 +69,8 @@ func loadGround(layer *tiled.Layer, g *game.Game, file *tiled.Map) {
 
 		idx_x := (idx % (file.Width))
 		idx_y := (idx / (file.Width))
-		x := cell_w * float64(idx_x)
-		y := cell_h * float64(idx_y)
+		x := cell_w*float64(idx_x) + cell_w/2
+		y := cell_h*float64(idx_y) + cell_h/2
 
 		img := GetImageFromLayerTile(tile)
 		s := sprite.NewSpriteEntity(img, common.Vec2{x, y})
