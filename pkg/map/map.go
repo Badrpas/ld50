@@ -75,6 +75,7 @@ func loadGround(layer *tiled.Layer, g *game.Game, file *tiled.Map) {
 		img := GetImageFromLayerTile(tile)
 		s := sprite.NewSpriteEntity(img, common.Vec2{x, y})
 		g.AddEntity(s)
+		g.SetEntityZ(s, -100)
 	}
 
 }

@@ -12,11 +12,14 @@ type EntitiesStorage map[*entity.Entity]*entity.Entity
 type Game struct {
 	Entities EntitiesStorage
 	Camera   *camera.Camera
+
+	z_order
 }
 
 func NewGame() *Game {
 	game := &Game{
 		Entities: EntitiesStorage{},
+		z_order:  new_z_order(),
 	}
 	init_input(game)
 	init_camera(game)
@@ -29,6 +32,7 @@ func (g *Game) AddEntity(e interface{}) {
 	if ok {
 		g.Entities[ent] = ent
 		ent.Game = g
+		g.SetEntityZ(ent, 0)
 	} else {
 		log.Println("Received non entity in Game.AddEntity()")
 	}
@@ -39,6 +43,7 @@ func (g *Game) RemoveEntity(e interface{}) {
 	if ok {
 		delete(g.Entities, ent)
 		ent.Game = nil
+		g.ClearEntityZ(ent)
 	} else {
 		log.Println("Received non entity in Game.RemoveEntity()")
 	}

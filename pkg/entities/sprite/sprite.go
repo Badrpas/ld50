@@ -38,7 +38,7 @@ func render(e *entity.Entity, screen *ebiten.Image) {
 
 	opts := &ebiten.DrawImageOptions{}
 	width, height := s.Img.Size()
-	opts.GeoM.Translate(float64(width/2), float64(height/2))
+	opts.GeoM.Translate(float64(width/-2), float64(height/-2))
 
 	opts.GeoM.Translate(s.Pos.X, s.Pos.Y)
 

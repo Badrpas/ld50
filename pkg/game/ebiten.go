@@ -1,6 +1,9 @@
 package game
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/hajimehoshi/ebiten/v2"
+	"image/color"
+)
 
 func (g *Game) Update() error {
 	dt := 1. / 60. // Really disliking that
@@ -17,10 +20,15 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	cam_surface := g.Camera.Surface
 	cam_surface.Clear()
+	cam_surface.Fill(color.Black)
 
-	for _, e := range g.Entities {
-		if e != nil && e.Render != nil {
-			e.Render(e, cam_surface)
+	z_count := len(g.zList)
+	for i := 0; i < z_count; i++ {
+		z := g.zList[i]
+		for _, e := range g.zLevels[z] {
+			if e != nil && e.Render != nil {
+				e.Render(e, cam_surface)
+			}
 		}
 	}
 
