@@ -15,13 +15,24 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	cam_surface := g.Camera.Surface
+	cam_surface.Clear()
+
 	for _, e := range g.Entities {
 		if e != nil && e.Render != nil {
-			e.Render(e, screen)
+			e.Render(e, cam_surface)
 		}
 	}
+
+	g.Camera.Blit(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+	c := g.Camera
+
+	if c.Width != outsideWidth || c.Height != outsideHeight {
+		c.Resize(outsideWidth, outsideHeight)
+	}
+
 	return outsideWidth, outsideHeight
 }

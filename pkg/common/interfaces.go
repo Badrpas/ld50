@@ -7,4 +7,6 @@ type Game interface {
 
 	AddEntity(e interface{})
 	RemoveEntity(e interface{})
+
+	TranslateWithCamera(options *ebiten.DrawImageOptions)
 }

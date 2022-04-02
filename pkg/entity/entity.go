@@ -6,7 +6,7 @@ import (
 )
 
 type Entity struct {
-	Game *common.Game
+	Game common.Game
 
 	Update func(self *Entity, dt float64)
 	Render func(self *Entity, screen *ebiten.Image)

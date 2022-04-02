@@ -2,7 +2,10 @@ module github.com/badrpas/ld50
 
 go 1.17
 
-require github.com/hajimehoshi/ebiten/v2 v2.2.5
+require (
+	github.com/hajimehoshi/ebiten/v2 v2.2.5
+	github.com/melonfunction/ebiten-camera v0.0.0-20220108183711-5c8a2c471904
+)
 
 require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210727001814-0db043d8d5be // indirect

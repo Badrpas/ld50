@@ -29,6 +29,9 @@ func NewSprite(img_name string, pos common.Vec2) *entity.Entity {
 }
 
 func render(e *entity.Entity, screen *ebiten.Image) {
+	if e.Game == nil {
+		return
+	}
 	s, ok := e.Heir.(*Sprite)
 	if !ok || s.Img == nil {
 		return
@@ -39,6 +42,8 @@ func render(e *entity.Entity, screen *ebiten.Image) {
 	opts.GeoM.Translate(float64(width/2), float64(height/2))
 
 	opts.GeoM.Translate(s.Pos.X, s.Pos.Y)
+
+	e.Game.TranslateWithCamera(opts)
 
 	screen.DrawImage(s.Img, opts)
 }
