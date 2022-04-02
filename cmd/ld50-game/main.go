@@ -11,7 +11,10 @@ import (
 func main() {
 	g := game.NewGame()
 
+	ebiten.SetWindowSize(800, 600)
 	ebiten.SetWindowResizable(true)
+	ebiten.SetWindowTitle("LD50")
+	//ebiten.MaximizeWindow()
 
 	err := gamemap.LoadMap("def.tmx", g)
 	if err != nil {

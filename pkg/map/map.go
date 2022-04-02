@@ -29,10 +29,33 @@ func LoadMap(name string, game *game.Game) error {
 		switch layer.Name {
 		case "ground":
 			loadGround(layer, game, file)
+		default:
+			log.Printf("Unrecognized tile layer name %s", layer.Name)
 		}
+		log.Println("Processed tile layer", layer.Name)
+	}
+
+	for _, objectGroup := range file.ObjectGroups {
+		switch objectGroup.Name {
+		case "buildings":
+			loadBuildings(objectGroup, game, file)
+		default:
+			log.Printf("Unrecognized object layer name %s", objectGroup.Name)
+		}
+		log.Println("Processed tile layer", objectGroup.Name)
 	}
 
 	return nil
+}
+
+func loadBuildings(layer *tiled.ObjectGroup, g *game.Game, file *tiled.Map) {
+	for _, objInfo := range layer.Objects {
+		prototile := GetTileByGid(objInfo.GID, file)
+		img := GetImageFromTileImage(prototile.Image)
+
+		s := sprite.NewSpriteEntity(img, common.Vec2{objInfo.X, objInfo.Y})
+		g.AddEntity(s)
+	}
 }
 
 func loadGround(layer *tiled.Layer, g *game.Game, file *tiled.Map) {
@@ -49,24 +72,41 @@ func loadGround(layer *tiled.Layer, g *game.Game, file *tiled.Map) {
 		x := cell_w * float64(idx_x)
 		y := cell_h * float64(idx_y)
 
-		img := GetImage(tile)
+		img := GetImageFromLayerTile(tile)
 		s := sprite.NewSpriteEntity(img, common.Vec2{x, y})
 		g.AddEntity(s)
 	}
 
 }
 
-func GetImage(t *tiled.LayerTile) *ebiten.Image {
-	for _, prototile := range t.Tileset.Tiles {
-		if prototile.ID == t.ID {
-			img_name := prototile.Image.Source
-			img_name = strings.Replace(img_name, "../img/", "", 1)
-			img, ok := imagerepo.ImgRepo[img_name]
-			if !ok {
-				log.Println("Can't find image", img_name)
-			}
-			return img
+func GetTileByGid(gid uint32, file *tiled.Map) *tiled.TilesetTile {
+	for _, tileset := range file.Tilesets {
+		start_at := (tileset.FirstGID)
+		count := uint32(tileset.TileCount)
+		if start_at <= gid && gid < start_at+count {
+			return tileset.Tiles[gid-start_at]
 		}
 	}
+
 	return nil
+}
+
+func GetImageFromLayerTile(t *tiled.LayerTile) *ebiten.Image {
+	for _, prototile := range t.Tileset.Tiles {
+		if prototile.ID == t.ID {
+			return GetImageFromTileImage(prototile.Image)
+		}
+	}
+
+	return nil
+}
+
+func GetImageFromTileImage(image *tiled.Image) *ebiten.Image {
+	img_name := image.Source
+	img_name = strings.Replace(img_name, "../img/", "", 1)
+	img, ok := imagerepo.ImgRepo[img_name]
+	if !ok {
+		log.Println("Can't find image", img_name)
+	}
+	return img
 }
