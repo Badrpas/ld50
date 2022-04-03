@@ -6,6 +6,7 @@ import (
 	"github.com/badrpas/ld50/pkg/grid"
 	"github.com/hajimehoshi/ebiten/v2"
 	camera "github.com/melonfunction/ebiten-camera"
+	"github.com/solarlune/resolv"
 	"log"
 )
 
@@ -20,12 +21,14 @@ type Game struct {
 
 	update_order
 	z_order
+	Space *resolv.Space
 }
 
 func NewGame() *Game {
 	game := &Game{
 		Entities:     EntitiesStorage{},
 		Grid:         grid.NewGrid(),
+		Space:        resolv.NewSpace(200*32, 200*32, 32, 32),
 		z_order:      new_z_order(),
 		update_order: new_update_order(),
 	}
@@ -98,4 +101,8 @@ func (g *Game) TranslateWithCamera(opts *ebiten.DrawImageOptions) {
 
 func (g *Game) GetGrid() faces.IGrid {
 	return g.Grid
+}
+
+func (g *Game) GetSpace() *resolv.Space {
+	return g.Space
 }

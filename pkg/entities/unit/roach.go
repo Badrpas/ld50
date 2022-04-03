@@ -7,6 +7,7 @@ import (
 	"github.com/badrpas/ld50/pkg/entity"
 	"github.com/badrpas/ld50/pkg/imgrepo"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/solarlune/resolv"
 	"math/rand"
 )
 
@@ -35,7 +36,11 @@ func NewRoach(pos common.Vec2) *Roach {
 	r.Heir = r
 	r.AddChild(r.Sprite.Entity)
 
-	p := controllers.NewPhysicsLink(&r.VelocityComponent, &r.Positioned)
+	b := resolv.NewObject(pos.X, pos.Y, 4, 4)
+	b.SetShape(resolv.NewCircle(0, 0, 16))
+	controllers.AddResolvRegistrator(r.Entity, b)
+
+	p := controllers.NewPhysicsLink(&r.VelocityComponent, &r.Positioned, b)
 	r.AddChild(p.Entity)
 
 	return r

@@ -23,9 +23,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	roach := unit.NewRoach(common.Vec2{3100, 3100})
-	g.AddEntitySafe(roach.Entity)
-	g.SetEntityZ(roach.Entity, 10)
+	for i := 0; i < 10; i++ {
+		roach := unit.NewRoach(common.Vec2{float64(3100 + i*3), 3100})
+		g.AddEntitySafe(roach.Entity)
+		g.SetEntityZ(roach.Entity, 10)
+	}
+
+	roach2 := unit.NewRoach(common.Vec2{3104, 3104})
+	g.AddEntitySafe(roach2.Entity)
+	g.SetEntityZ(roach2.Entity, 10)
 
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
