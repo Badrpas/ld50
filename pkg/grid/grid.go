@@ -3,6 +3,7 @@ package grid
 import (
 	"github.com/badrpas/ld50/pkg/common"
 	"github.com/badrpas/ld50/pkg/faces/grid"
+	"log"
 )
 
 const (
@@ -31,7 +32,10 @@ func (g *Grid) GetCellAt(x, y int) grid.IGridCell {
 
 	cell := g.storage[x][y]
 	if cell == nil {
-		cell = &GridCell{}
+		cell = &GridCell{
+			X: x,
+			Y: y,
+		}
 		g.storage[x][y] = cell
 	}
 
@@ -50,5 +54,11 @@ func (g *Grid) SetCellAt(x, y int, cell grid.IGridCell) {
 		g.storage[x] = map[int]grid.IGridCell{}
 	}
 
-	g.storage[x][y] = cell
+	gc, ok := cell.(*GridCell)
+	if !ok {
+		log.Println("Non-GridCell is passed")
+		return
+	}
+	gc.X, gc.Y = x, y
+	g.storage[x][y] = gc
 }

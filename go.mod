@@ -3,6 +3,7 @@ module github.com/badrpas/ld50
 go 1.17
 
 require (
+	github.com/beefsack/go-astar v0.0.0-20200827232313-4ecf9e304482
 	github.com/hajimehoshi/ebiten/v2 v2.2.5
 	github.com/lafriks/go-tiled v0.7.0
 	github.com/melonfunction/ebiten-camera v0.0.0-20220108183711-5c8a2c471904
