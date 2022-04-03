@@ -24,9 +24,10 @@ type Game struct {
 
 func NewGame() *Game {
 	game := &Game{
-		Entities: EntitiesStorage{},
-		Grid:     grid.NewGrid(),
-		z_order:  new_z_order(),
+		Entities:     EntitiesStorage{},
+		Grid:         grid.NewGrid(),
+		z_order:      new_z_order(),
+		update_order: new_update_order(),
 	}
 	init_input(game)
 	init_camera(game)
@@ -37,6 +38,9 @@ func NewGame() *Game {
 func (g *Game) AddEntitySafe(e *entity.Entity) {
 	g.Entities[e] = e
 	e.Game = g
+	if e.Heir == nil {
+		log.Println("No Heir defined")
+	}
 
 	if e.Parent == nil {
 		g.AddRootEntity(e)

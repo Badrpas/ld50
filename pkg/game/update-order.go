@@ -10,6 +10,13 @@ type update_order struct {
 	priorities map[*entity.Entity]float64
 }
 
+func new_update_order() update_order {
+	return update_order{
+		roots:      nil,
+		priorities: map[*entity.Entity]float64{},
+	}
+}
+
 func (u *update_order) AddRootEntity(e *entity.Entity) {
 	for _, root_entity := range u.roots {
 		if root_entity == e {

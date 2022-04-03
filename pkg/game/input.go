@@ -16,4 +16,5 @@ func init_input(g *Game) {
 	}
 
 	g.AddEntity(handler)
+	g.SetUpdatePriority(handler, -10000)
 }

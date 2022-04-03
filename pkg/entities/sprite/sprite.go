@@ -9,7 +9,8 @@ import (
 type Sprite struct {
 	*entity.Entity
 
-	Img *ebiten.Image
+	Img  *ebiten.Image
+	Opts *ebiten.DrawImageOptions
 
 	common.Positioned
 }
@@ -20,6 +21,7 @@ func NewSprite(image *ebiten.Image, pos common.Vec2) *Sprite {
 			Render: render,
 		},
 		image,
+		&ebiten.DrawImageOptions{},
 		common.Positioned{
 			pos,
 		},
@@ -39,10 +41,10 @@ func render(e *entity.Entity, screen *ebiten.Image) {
 		return
 	}
 
-	opts := &ebiten.DrawImageOptions{}
 	width, height := s.Img.Size()
+	opts := s.Opts
+	opts.GeoM.Reset()
 	opts.GeoM.Translate(float64(width/-2), float64(height/-2))
-
 	opts.GeoM.Translate(s.Pos.X, s.Pos.Y)
 
 	e.Game.TranslateWithCamera(opts)

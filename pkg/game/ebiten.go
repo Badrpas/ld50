@@ -4,10 +4,23 @@ import (
 	"github.com/badrpas/ld50/pkg/entity"
 	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
+	"time"
 )
 
+var last_ms int64
+
+func init() {
+	last_ms = time.Now().UnixMilli()
+}
+func get_dt() float64 {
+	now := time.Now().UnixMilli()
+	dt := float64(now-last_ms) / 1000.0
+	last_ms = now
+	return dt
+}
+
 func (g *Game) Update() error {
-	dt := 1. / 60. // Really disliking that
+	dt := get_dt()
 
 	for _, e := range g.update_order.roots {
 		update_entity(e, dt)
