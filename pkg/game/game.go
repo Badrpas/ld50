@@ -2,6 +2,8 @@ package game
 
 import (
 	"github.com/badrpas/ld50/pkg/entity"
+	faces "github.com/badrpas/ld50/pkg/faces/grid"
+	"github.com/badrpas/ld50/pkg/grid"
 	"github.com/hajimehoshi/ebiten/v2"
 	camera "github.com/melonfunction/ebiten-camera"
 	"log"
@@ -13,12 +15,15 @@ type Game struct {
 	Entities EntitiesStorage
 	Camera   *camera.Camera
 
+	Grid *grid.Grid
+
 	z_order
 }
 
 func NewGame() *Game {
 	game := &Game{
 		Entities: EntitiesStorage{},
+		Grid:     grid.NewGrid(),
 		z_order:  new_z_order(),
 	}
 	init_input(game)
@@ -27,12 +32,16 @@ func NewGame() *Game {
 	return game
 }
 
+func (g *Game) AddEntitySafe(e *entity.Entity) {
+	g.Entities[e] = e
+	e.Game = g
+	g.SetEntityZ(e, 0)
+}
+
 func (g *Game) AddEntity(e interface{}) {
 	ent, ok := e.(*entity.Entity)
 	if ok {
-		g.Entities[ent] = ent
-		ent.Game = g
-		g.SetEntityZ(ent, 0)
+		g.AddEntitySafe(ent)
 	} else {
 		log.Println("Received non entity in Game.AddEntity()")
 	}
@@ -54,4 +63,8 @@ func (g *Game) TranslateWithCamera(opts *ebiten.DrawImageOptions) {
 	w, h := c.Width, c.Height
 	opts.GeoM.Translate(float64(w)/c.Scale/2, float64(h)/c.Scale/2)
 	opts.GeoM.Translate(-c.X, -c.Y)
+}
+
+func (g *Game) GetGrid() faces.IGrid {
+	return g.Grid
 }

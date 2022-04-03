@@ -1,4 +1,4 @@
-package img
+package imgrepo
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"

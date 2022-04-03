@@ -2,10 +2,8 @@ package gamemap
 
 import (
 	"fmt"
-	"github.com/badrpas/ld50/pkg/common"
-	"github.com/badrpas/ld50/pkg/entities/sprite"
 	"github.com/badrpas/ld50/pkg/game"
-	imagerepo "github.com/badrpas/ld50/pkg/img"
+	imagerepo "github.com/badrpas/ld50/pkg/imgrepo"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/lafriks/go-tiled"
 	"log"
@@ -28,7 +26,7 @@ func LoadMap(name string, game *game.Game) error {
 	for _, layer := range file.Layers {
 		switch layer.Name {
 		case "ground":
-			loadGround(layer, game, file)
+			load_ground(layer, game, file)
 		default:
 			log.Printf("Unrecognized tile layer name %s", layer.Name)
 		}
@@ -38,7 +36,7 @@ func LoadMap(name string, game *game.Game) error {
 	for _, objectGroup := range file.ObjectGroups {
 		switch objectGroup.Name {
 		case "buildings":
-			loadBuildings(objectGroup, game, file)
+			load_buildings(objectGroup, game, file)
 		default:
 			log.Printf("Unrecognized object layer name %s", objectGroup.Name)
 		}
@@ -46,38 +44,6 @@ func LoadMap(name string, game *game.Game) error {
 	}
 
 	return nil
-}
-
-func loadBuildings(layer *tiled.ObjectGroup, g *game.Game, file *tiled.Map) {
-	for _, objInfo := range layer.Objects {
-		prototile := GetTileByGid(objInfo.GID, file)
-		img := GetImageFromTileImage(prototile.Image)
-
-		s := sprite.NewSpriteEntity(img, common.Vec2{objInfo.X, objInfo.Y})
-		g.AddEntity(s)
-	}
-}
-
-func loadGround(layer *tiled.Layer, g *game.Game, file *tiled.Map) {
-	cell_w := float64(file.TileWidth)
-	cell_h := float64(file.TileHeight)
-
-	for idx, tile := range layer.Tiles {
-		if tile.IsNil() {
-			continue
-		}
-
-		idx_x := (idx % (file.Width))
-		idx_y := (idx / (file.Width))
-		x := cell_w*float64(idx_x) + cell_w/2
-		y := cell_h*float64(idx_y) + cell_h/2
-
-		img := GetImageFromLayerTile(tile)
-		s := sprite.NewSpriteEntity(img, common.Vec2{x, y})
-		g.AddEntity(s)
-		g.SetEntityZ(s, -100)
-	}
-
 }
 
 func GetTileByGid(gid uint32, file *tiled.Map) *tiled.TilesetTile {

@@ -1,6 +1,9 @@
-package common
+package game
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/badrpas/ld50/pkg/faces/grid"
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type Game interface {
 	ebiten.Game
@@ -9,4 +12,6 @@ type Game interface {
 	RemoveEntity(e interface{})
 
 	TranslateWithCamera(options *ebiten.DrawImageOptions)
+
+	GetGrid() grid.IGrid
 }

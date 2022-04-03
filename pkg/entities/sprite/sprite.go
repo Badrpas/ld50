@@ -13,7 +13,7 @@ type Sprite struct {
 	Pos common.Vec2
 }
 
-func NewSpriteEntity(image *ebiten.Image, pos common.Vec2) *entity.Entity {
+func NewSprite(image *ebiten.Image, pos common.Vec2) *Sprite {
 	s := &Sprite{
 		&entity.Entity{
 			Render: render,
@@ -24,7 +24,7 @@ func NewSpriteEntity(image *ebiten.Image, pos common.Vec2) *entity.Entity {
 
 	s.Heir = s
 
-	return s.Entity
+	return s
 }
 
 func render(e *entity.Entity, screen *ebiten.Image) {

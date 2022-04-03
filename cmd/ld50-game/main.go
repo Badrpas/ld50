@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/badrpas/ld50/pkg/game"
-	_ "github.com/badrpas/ld50/pkg/img"
+	_ "github.com/badrpas/ld50/pkg/imgrepo"
 	gamemap "github.com/badrpas/ld50/pkg/map"
 	"github.com/hajimehoshi/ebiten/v2"
 	"log"
