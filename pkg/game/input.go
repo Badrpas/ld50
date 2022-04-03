@@ -14,6 +14,7 @@ func init_input(g *Game) {
 			}
 		},
 	}
+	handler.Heir = handler
 
 	g.AddEntity(handler)
 	g.SetUpdatePriority(handler, -10000)

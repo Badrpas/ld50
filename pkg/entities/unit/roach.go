@@ -2,6 +2,7 @@ package unit
 
 import (
 	"github.com/badrpas/ld50/pkg/common"
+	"github.com/badrpas/ld50/pkg/controllers"
 	"github.com/badrpas/ld50/pkg/entities/sprite"
 	"github.com/badrpas/ld50/pkg/entity"
 	"github.com/badrpas/ld50/pkg/imgrepo"
@@ -16,6 +17,8 @@ type Roach struct {
 
 	target_pos common.Vec2
 	Speed      float64
+
+	controllers.VelocityComponent
 }
 
 func NewRoach(pos common.Vec2) *Roach {
@@ -32,6 +35,9 @@ func NewRoach(pos common.Vec2) *Roach {
 	r.Heir = r
 	r.AddChild(r.Sprite.Entity)
 
+	p := controllers.NewPhysicsLink(&r.VelocityComponent, &r.Positioned)
+	r.AddChild(p.Entity)
+
 	return r
 }
 
@@ -41,18 +47,15 @@ func update(e *entity.Entity, dt float64) {
 		return
 	}
 
-	//cell := roach.Game.GetGrid().GetCellAtPos(roach.Pos)
-
 	diff := roach.target_pos.Sub(roach.Pos)
 	if diff.LengthSqr() > 0.2 {
 		dir := diff.Normalize()
 		step_length := dt * roach.Speed
-		step := dir.Scale(step_length)
 
 		if diff.Length() < step_length {
 			roach.Pos = roach.target_pos
 		} else {
-			roach.Pos = roach.Pos.Add(step)
+			roach.Velocity = dir.Scale(roach.Speed)
 		}
 	} else {
 		roach.target_pos = roach.Pos.Add(common.Vec2{

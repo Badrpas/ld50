@@ -1,6 +1,7 @@
 package game
 
 import (
+	"github.com/badrpas/ld50/pkg/controllers"
 	"github.com/badrpas/ld50/pkg/entity"
 	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
@@ -25,6 +26,8 @@ func (g *Game) Update() error {
 	for _, e := range g.update_order.roots {
 		update_entity(e, dt)
 	}
+
+	controllers.UpdatePhysics(dt)
 
 	return nil
 }

@@ -27,6 +27,7 @@ func (e *Entity) AddChild(entity *Entity) {
 	}
 
 	e.Children = append(e.Children, entity)
+	entity.SetParent(e)
 }
 
 func (e *Entity) RemoveChild(entity *Entity) {

@@ -43,6 +43,7 @@ func init_camera(g *Game) {
 			}
 		},
 	}
+	handler.Heir = handler
 
 	g.AddEntity(handler)
 	g.SetUpdatePriority(handler, -10000+1)
