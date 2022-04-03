@@ -11,19 +11,20 @@ import (
 type Roach struct {
 	*entity.Entity
 
-	Sprite *sprite.Sprite
+	*sprite.Sprite
 }
 
 func NewRoach(pos common.Vec2) *Roach {
 	image := imgrepo.ImgRepo["bug.png"]
 
 	r := &Roach{
-		Entity: nil,
+		Entity: &entity.Entity{},
 		Sprite: sprite.NewSprite(image, pos),
 	}
 	r.Render = render
 	r.Update = update
 	r.Heir = r
+	r.AddChild(r.Sprite.Entity)
 
 	return r
 }
@@ -34,12 +35,12 @@ func update(e *entity.Entity, dt float64) {
 		return
 	}
 
-	roach.Game.GetGrid().GetCellAtPos(roach.Sprite.Pos)
+	roach.Game.GetGrid().GetCellAtPos(roach.Pos)
 }
 
 func render(e *entity.Entity, screen *ebiten.Image) {
 	roach, ok := e.Heir.(*Roach)
 	if ok {
-		roach.Sprite.Render(e, screen)
+		roach.Sprite.Render(roach.Sprite.Entity, screen)
 	}
 }

@@ -1,6 +1,7 @@
 package game
 
 import (
+	"github.com/badrpas/ld50/pkg/entity"
 	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
 )
@@ -8,13 +9,22 @@ import (
 func (g *Game) Update() error {
 	dt := 1. / 60. // Really disliking that
 
-	for _, e := range g.Entities {
-		if e != nil && e.Update != nil {
-			e.Update(e, dt)
-		}
+	for _, e := range g.update_order.roots {
+		update_entity(e, dt)
 	}
 
 	return nil
+}
+
+func update_entity(e *entity.Entity, dt float64) {
+	if e != nil {
+		if e.Update != nil {
+			e.Update(e, dt)
+		}
+		for _, child := range e.Children {
+			update_entity(child, dt)
+		}
+	}
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {

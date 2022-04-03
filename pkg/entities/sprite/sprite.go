@@ -10,7 +10,8 @@ type Sprite struct {
 	*entity.Entity
 
 	Img *ebiten.Image
-	Pos common.Vec2
+
+	common.Positioned
 }
 
 func NewSprite(image *ebiten.Image, pos common.Vec2) *Sprite {
@@ -19,7 +20,9 @@ func NewSprite(image *ebiten.Image, pos common.Vec2) *Sprite {
 			Render: render,
 		},
 		image,
-		pos,
+		common.Positioned{
+			pos,
+		},
 	}
 
 	s.Heir = s

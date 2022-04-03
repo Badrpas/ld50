@@ -12,11 +12,13 @@ import (
 type EntitiesStorage map[*entity.Entity]*entity.Entity
 
 type Game struct {
+	Camera *camera.Camera
+
 	Entities EntitiesStorage
-	Camera   *camera.Camera
 
 	Grid *grid.Grid
 
+	update_order
 	z_order
 }
 
@@ -35,7 +37,24 @@ func NewGame() *Game {
 func (g *Game) AddEntitySafe(e *entity.Entity) {
 	g.Entities[e] = e
 	e.Game = g
-	g.SetEntityZ(e, 0)
+
+	if e.Parent == nil {
+		g.AddRootEntity(e)
+	}
+
+	if e.Parent != nil && e.Parent.Game != g {
+		g.AddEntitySafe(e.Parent)
+	}
+
+	for _, child := range e.Children {
+		if child.Game != g {
+			g.AddEntitySafe(child)
+		}
+	}
+
+	if _, exists := g.entitiesZ[e]; !exists {
+		g.SetEntityZ(e, 0)
+	}
 }
 
 func (g *Game) AddEntity(e interface{}) {
@@ -53,6 +72,14 @@ func (g *Game) RemoveEntity(e interface{}) {
 		delete(g.Entities, ent)
 		ent.Game = nil
 		g.ClearEntityZ(ent)
+		g.ClearEntityUpdateOrder(ent)
+
+		children := ent.Children
+		ent.Children = nil // Clearing preemptively to skip append() calls in RemoveChild
+		for _, child := range children {
+			g.RemoveEntity(child)
+		}
+		ent.SetParent(nil)
 	} else {
 		log.Println("Received non entity in Game.RemoveEntity()")
 	}

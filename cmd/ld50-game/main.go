@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/badrpas/ld50/pkg/common"
+	"github.com/badrpas/ld50/pkg/entities/unit"
 	"github.com/badrpas/ld50/pkg/game"
 	_ "github.com/badrpas/ld50/pkg/imgrepo"
 	gamemap "github.com/badrpas/ld50/pkg/map"
@@ -20,6 +22,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	roach := unit.NewRoach(common.Vec2{3100, 3100})
+	g.AddEntitySafe(roach.Entity)
+	g.SetEntityZ(roach.Entity, 10)
 
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
