@@ -1,32 +1,34 @@
 package controllers
 
 import (
-	"github.com/badrpas/ld50/pkg/common"
+	"github.com/badrpas/ld50/pkg/components"
 	"github.com/badrpas/ld50/pkg/entity"
 	"github.com/solarlune/resolv"
 	"math"
 )
 
-type VelocityComponent struct {
-	Velocity common.Vec2
-}
-
 type PhysLink struct {
 	obj *resolv.Object
 
-	*VelocityComponent
-
-	*common.Positioned
+	*components.VelocityComponent
+	*components.SpeedComponent
+	*components.Position
 
 	*entity.Entity
 }
 
 var reg []*PhysLink
 
-func NewPhysicsLink(velocityComponent *VelocityComponent, positioned *common.Positioned, obj *resolv.Object) *PhysLink {
+func NewPhysicsLink(
+	velocityComponent *components.VelocityComponent,
+	positioned *components.Position,
+	speedComponent *components.SpeedComponent,
+	obj *resolv.Object,
+) *PhysLink {
 	p := &PhysLink{
 		obj,
 		velocityComponent,
+		speedComponent,
 		positioned,
 		&entity.Entity{},
 	}
@@ -47,7 +49,7 @@ func UpdatePhysics(dt float64) {
 		reg[idx] = info
 		idx++
 
-		diff := info.Velocity.Scale(dt)
+		diff := info.Vel.Scale(dt)
 		if info.obj != nil {
 			dx, dy := diff.XY()
 			adx, ady := math.Abs(dx), math.Abs(dy)

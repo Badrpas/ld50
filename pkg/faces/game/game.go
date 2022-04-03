@@ -12,6 +12,8 @@ type Game interface {
 	AddEntity(e interface{})
 	RemoveEntity(e interface{})
 
+	EachEntity(func(e interface{}))
+
 	TranslateWithCamera(options *ebiten.DrawImageOptions)
 
 	GetGrid() grid.IGrid

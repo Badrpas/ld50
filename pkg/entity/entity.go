@@ -15,6 +15,8 @@ type Entity struct {
 
 	Children []*Entity
 	Parent   *Entity
+
+	Init func(self *Entity)
 }
 
 type EntitySet map[*Entity]*Entity
@@ -28,6 +30,9 @@ func (e *Entity) AddChild(entity *Entity) {
 
 	e.Children = append(e.Children, entity)
 	entity.SetParent(e)
+	if e.Game != nil {
+		e.Game.AddEntity(entity)
+	}
 }
 
 func (e *Entity) RemoveChild(entity *Entity) {

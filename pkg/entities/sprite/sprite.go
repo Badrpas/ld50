@@ -2,6 +2,7 @@ package sprite
 
 import (
 	"github.com/badrpas/ld50/pkg/common"
+	"github.com/badrpas/ld50/pkg/components"
 	"github.com/badrpas/ld50/pkg/entity"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -12,7 +13,7 @@ type Sprite struct {
 	Img  *ebiten.Image
 	Opts *ebiten.DrawImageOptions
 
-	common.Positioned
+	components.Position
 }
 
 func NewSprite(image *ebiten.Image, pos common.Vec2) *Sprite {
@@ -22,7 +23,7 @@ func NewSprite(image *ebiten.Image, pos common.Vec2) *Sprite {
 		},
 		image,
 		&ebiten.DrawImageOptions{},
-		common.Positioned{
+		components.Position{
 			pos,
 		},
 	}

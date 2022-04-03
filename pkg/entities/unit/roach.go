@@ -1,77 +1,94 @@
 package unit
 
 import (
-	"github.com/badrpas/ld50/pkg/common"
-	"github.com/badrpas/ld50/pkg/controllers"
-	"github.com/badrpas/ld50/pkg/entities/sprite"
-	"github.com/badrpas/ld50/pkg/entity"
-	"github.com/badrpas/ld50/pkg/imgrepo"
+	. "github.com/badrpas/ld50/pkg/common"
+	. "github.com/badrpas/ld50/pkg/components"
+	. "github.com/badrpas/ld50/pkg/controllers"
+	. "github.com/badrpas/ld50/pkg/entities/building"
+	. "github.com/badrpas/ld50/pkg/entities/sprite"
+	. "github.com/badrpas/ld50/pkg/entity"
+	. "github.com/badrpas/ld50/pkg/imgrepo"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/solarlune/resolv"
-	"math/rand"
+	"math"
 )
 
 type Roach struct {
-	*entity.Entity
+	*Entity
 
-	*sprite.Sprite
+	*Sprite
 
-	target_pos common.Vec2
-	Speed      float64
+	follower       *Follower
+	TargetBuilding *Building
 
-	controllers.VelocityComponent
+	VelocityComponent
+	SpeedComponent
 }
 
-func NewRoach(pos common.Vec2) *Roach {
-	image := imgrepo.ImgRepo["bug.png"]
+func NewRoach(pos Vec2) *Roach {
+	image := ImgRepo["bug.png"]
 
 	r := &Roach{
-		Entity:     &entity.Entity{},
-		Sprite:     sprite.NewSprite(image, pos),
-		target_pos: pos,
-		Speed:      100,
+		Entity: &Entity{},
+		Sprite: NewSprite(image, pos),
 	}
+	r.Speed = 100
 	r.Render = render
 	r.Update = update
 	r.Heir = r
 	r.AddChild(r.Sprite.Entity)
 
 	b := resolv.NewObject(pos.X, pos.Y, 4, 4)
+	b.Data = r.Entity
 	b.SetShape(resolv.NewCircle(0, 0, 16))
-	controllers.AddResolvRegistrator(r.Entity, b)
+	AddResolvRegistrator(r.Entity, b)
 
-	p := controllers.NewPhysicsLink(&r.VelocityComponent, &r.Positioned, b)
+	p := NewPhysicsLink(&r.VelocityComponent, &r.Position, &r.SpeedComponent, b)
 	r.AddChild(p.Entity)
+
+	r.follower = NewPosFollower(p, nil)
+	r.AddChild(r.follower.Entity)
 
 	return r
 }
 
-func update(e *entity.Entity, dt float64) {
+func update(e *Entity, dt float64) {
 	roach, ok := e.Heir.(*Roach)
 	if !ok {
 		return
 	}
-
-	diff := roach.target_pos.Sub(roach.Pos)
-	if diff.LengthSqr() > 0.2 {
-		dir := diff.Normalize()
-		step_length := dt * roach.Speed
-
-		if diff.Length() < step_length {
-			roach.Pos = roach.target_pos
-		} else {
-			roach.Velocity = dir.Scale(roach.Speed)
-		}
-	} else {
-		roach.target_pos = roach.Pos.Add(common.Vec2{
-			X: rand.Float64() - 0.5,
-			Y: rand.Float64() - 0.5,
-		}.Normalize().Scale(100))
+	g := roach.Game
+	if g == nil {
+		return
 	}
 
+	var closest *Building
+	distance := math.MaxFloat64
+	g.EachEntity(func(i interface{}) {
+		e, ok := i.(*Entity)
+		if !ok {
+			return
+		}
+
+		b, ok := e.Heir.(*Building)
+		if ok {
+			dist := b.Pos.Sub(roach.Pos).LengthSqr()
+
+			if dist < distance {
+				distance = dist
+				closest = b
+			}
+		}
+	})
+
+	roach.TargetBuilding = closest
+
+	if closest != nil {
+		roach.follower.Target = &closest.Position
+	}
 }
 
-func render(e *entity.Entity, screen *ebiten.Image) {
+func render(e *Entity, screen *ebiten.Image) {
 	roach, ok := e.Heir.(*Roach)
 	if ok {
 		roach.Sprite.Render(roach.Sprite.Entity, screen)

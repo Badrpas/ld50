@@ -24,7 +24,7 @@ func main() {
 	}
 
 	for i := 0; i < 10; i++ {
-		roach := unit.NewRoach(common.Vec2{float64(3100 + i*3), 3100})
+		roach := unit.NewRoach(common.Vec2{float64(3000 + i*3), 3500})
 		g.AddEntitySafe(roach.Entity)
 		g.SetEntityZ(roach.Entity, 10)
 	}

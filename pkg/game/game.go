@@ -49,6 +49,10 @@ func (g *Game) AddEntitySafe(e *entity.Entity) {
 		g.AddRootEntity(e)
 	}
 
+	if e.Init != nil {
+		e.Init(e)
+	}
+
 	if e.Parent != nil && e.Parent.Game != g {
 		g.AddEntitySafe(e.Parent)
 	}
@@ -105,4 +109,10 @@ func (g *Game) GetGrid() faces.IGrid {
 
 func (g *Game) GetSpace() *resolv.Space {
 	return g.Space
+}
+
+func (g *Game) EachEntity(f func(e interface{})) {
+	for e, _ := range g.Entities {
+		f(e)
+	}
 }

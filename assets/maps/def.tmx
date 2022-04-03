@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="11">
  <tileset firstgid="1" source="tiles.tsx"/>
- <tileset firstgid="3" source="buildings.tsx"/>
- <tileset firstgid="5" source="units.tsx"/>
+ <tileset firstgid="2" source="buildings.tsx"/>
+ <tileset firstgid="4" source="units.tsx"/>
  <layer id="1" name="ground" width="200" height="200">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -208,8 +208,8 @@
 </data>
  </layer>
  <objectgroup id="2" name="buildings">
-  <object id="2" gid="3" x="3111" y="2988" width="64" height="64"/>
-  <object id="4" gid="4" x="2991" y="2830" width="64" height="64"/>
-  <object id="8" gid="4" x="3088" y="3111.33" width="64" height="64"/>
+  <object id="2" gid="2" x="3111" y="2988" width="64" height="64"/>
+  <object id="4" gid="3" x="2991" y="2830" width="64" height="64"/>
+  <object id="8" gid="3" x="3278" y="3071.33" width="64" height="64"/>
  </objectgroup>
 </map>

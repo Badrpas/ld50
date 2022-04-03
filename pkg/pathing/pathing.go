@@ -14,6 +14,10 @@ type Node struct {
 	int_vec
 }
 
+type int_vec struct {
+	x, y int
+}
+
 var nodes map[grid.IGridCell]*Node
 var cells map[*Node]grid.IGridCell
 
@@ -73,10 +77,6 @@ func FindWay(grid grid.IGrid, from, to common.Vec2, max_length int) []common.Vec
 	return nil
 }
 
-type int_vec struct {
-	x, y int
-}
-
 var n_shifts []int_vec
 
 func init() {
@@ -101,7 +101,8 @@ func (n *Node) PathNeighbors() []astar.Pather {
 	for _, shift := range n_shifts {
 		pos := int_vec{shift.x + n.x, shift.y + n.y}
 		node := get_node_at_safe(n.grid, pos.x, pos.y)
-		if node != nil {
+		cell := cells[node]
+		if node != nil || cell.GetHolder() != nil {
 			continue
 		}
 		node.length_left = n.length_left - 1
