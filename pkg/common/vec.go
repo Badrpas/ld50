@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/badrpas/ld50/pkg/config"
 	"math"
 )
 
@@ -51,4 +52,9 @@ func (v Vec2) Invert() Vec2 {
 		-v.X,
 		-v.Y,
 	}
+}
+
+func (v Vec2) GridXY() (int, int) {
+	x, y := v.Scale(1. / config.CELL_SIZE).XYint()
+	return x, y
 }

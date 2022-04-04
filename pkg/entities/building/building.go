@@ -9,6 +9,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/solarlune/resolv"
 	"log"
+	"math"
 )
 
 type Building struct {
@@ -39,6 +40,15 @@ func NewBuilding(img *ebiten.Image, pos common.Vec2) *Building {
 	AddResolvRegistrator(b.Entity, o)
 
 	return b
+}
+
+func (b *Building) GetNearestPoint(from common.Vec2) common.Vec2 {
+	dir := from.Sub(b.Pos).Normalize()
+
+	w := b.Img.Bounds().Dx()
+	d := math.Sqrt(float64(w*w + w*w))
+
+	return b.Pos.Add(dir.Scale(float64(d)/2. + 3))
 }
 
 func building_init(entity *Entity) {

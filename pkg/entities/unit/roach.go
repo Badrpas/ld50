@@ -18,8 +18,9 @@ type Roach struct {
 
 	*Sprite
 
-	follower       *Follower
-	TargetBuilding *Building
+	follower           *Follower
+	TargetBuilding     *Building
+	targetPosComponent Position
 
 	VelocityComponent
 	SpeedComponent
@@ -35,6 +36,7 @@ func NewRoach(pos Vec2) *Roach {
 	r.Speed = 100
 	r.Render = render
 	r.Update = update
+	r.Init = init_roach
 	r.Heir = r
 	r.AddChild(r.Sprite.Entity)
 
@@ -50,6 +52,36 @@ func NewRoach(pos Vec2) *Roach {
 	r.AddChild(r.follower.Entity)
 
 	return r
+}
+
+func init_roach(e *Entity) {
+	r, _ := e.Heir.(*Roach)
+	g := r.Game
+
+	grid := g.GetGrid()
+	cell := grid.GetCellAtPos(r.Pos)
+	if cell.GetHolder() == nil {
+		cell.SetHolder(r.Entity)
+	} else {
+		idx := 0
+		shift := [2]int{}
+		x, y := cell.GetPos()
+
+		for true {
+			cell := grid.GetCellAt(x+shift[0], y+shift[1])
+			if cell.GetHolder() == nil {
+				cell.SetHolder(r.Entity)
+				r.Pos = cell.GetPosWorld()
+				return
+			}
+			if idx%2 == 0 {
+				shift[0]++
+			} else {
+				shift[1]++
+			}
+			idx++
+		}
+	}
 }
 
 func update(e *Entity, dt float64) {
@@ -84,7 +116,8 @@ func update(e *Entity, dt float64) {
 	roach.TargetBuilding = closest
 
 	if closest != nil {
-		roach.follower.Target = &closest.Position
+		roach.follower.Target = &roach.targetPosComponent
+		roach.targetPosComponent.Pos = closest.GetNearestPoint(roach.Pos)
 	}
 }
 

@@ -6,10 +6,6 @@ import (
 	"log"
 )
 
-const (
-	CELL_SIZE = 16
-)
-
 type Grid struct {
 	storage map[int]map[int]grid.IGridCell
 }
@@ -21,8 +17,8 @@ func NewGrid() *Grid {
 }
 
 func (g *Grid) GetCellAtPos(vec2 common.Vec2) grid.IGridCell {
-	x, y := vec2.Scale(1 / CELL_SIZE).XYint()
-	return g.GetCellAt((x), (y))
+	x, y := vec2.GridXY()
+	return g.GetCellAt(x, y)
 }
 
 func (g *Grid) GetCellAt(x, y int) grid.IGridCell {

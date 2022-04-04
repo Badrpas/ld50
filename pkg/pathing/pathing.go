@@ -57,21 +57,26 @@ func get_node_at_safe(grid grid.IGrid, x, y int) *Node {
 	return nil
 }
 
-func FindWay(grid grid.IGrid, from, to common.Vec2, max_length int) []common.Vec2 {
-	from_cell := get_node_at_pos(grid, from)
-	to_cell := get_node_at_pos(grid, to)
-	from_cell.length_left = max_length
+var start_pos_int int_vec
 
-	path, _, found := astar.Path(from_cell, to_cell)
+func FindWay(grid grid.IGrid, from, to common.Vec2, max_length int) []common.Vec2 {
+	from_node := get_node_at_pos(grid, from)
+	to_node := get_node_at_pos(grid, to)
+	from_node.length_left = max_length
+	start_pos_int = from_node.int_vec
+
+	path, _, found := astar.Path(from_node, to_node)
 	if found {
-		points := make([]common.Vec2, len(path))
+		point_count := len(path)
+		points := make([]common.Vec2, point_count)
 		for i, pather := range path {
 			node, ok := pather.(*Node)
 			if !ok {
 				log.Fatalln("non-Node")
 			}
-			points[i] = node.GetWorldPos()
+			points[point_count-1-i] = node.GetWorldPos()
 		}
+		return points
 	}
 
 	return nil
@@ -83,8 +88,8 @@ func init() {
 	n_shifts = []int_vec{
 		{-1, +0},
 		{+1, +0},
-		{-0, +1},
-		{-0, -1},
+		{+0, +1},
+		{+0, -1},
 	}
 }
 
@@ -93,16 +98,23 @@ func (n *Node) GetWorldPos() common.Vec2 {
 }
 
 func (n *Node) PathNeighbors() []astar.Pather {
-	if n.length_left == 0 {
+	man_dist := n.manhat_dist_to(start_pos_int)
+
+	//if n.length_left == 0 {
+	//	//return nil
+	//}
+	if man_dist > 22 {
 		return nil
 	}
+	//
+
 	var pn []astar.Pather = nil
 
 	for _, shift := range n_shifts {
 		pos := int_vec{shift.x + n.x, shift.y + n.y}
 		node := get_node_at_safe(n.grid, pos.x, pos.y)
 		cell := cells[node]
-		if node != nil || cell.GetHolder() != nil {
+		if node == nil || cell.GetHolder() != nil {
 			continue
 		}
 		node.length_left = n.length_left - 1
@@ -121,7 +133,11 @@ func (n *Node) PathEstimatedCost(to astar.Pather) float64 {
 	if !ok {
 		log.Println("got non-Node")
 	}
-	dx := math.Abs(float64(t.x - n.x))
-	dy := math.Abs(float64(t.y - n.y))
-	return dx + dy
+	return float64(t.manhat_dist_to(n.int_vec))
+}
+
+func (v int_vec) manhat_dist_to(o int_vec) int {
+	dx := math.Abs(float64(o.x - v.x))
+	dy := math.Abs(float64(o.y - v.y))
+	return int(dx + dy)
 }

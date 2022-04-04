@@ -8,13 +8,16 @@ import (
 	"time"
 )
 
-var last_ms int64
+var last_ms int64 = -1
 
 func init() {
 	last_ms = time.Now().UnixMilli()
 }
 func get_dt() float64 {
 	now := time.Now().UnixMilli()
+	if last_ms == -1 {
+		last_ms = now - 40
+	}
 	dt := float64(now-last_ms) / 1000.0
 	last_ms = now
 	return dt
